@@ -16,6 +16,7 @@ let ConsoleErrorHandler: ErrorHandler = { error in
     print("Error happened: \(error)")
 }
 
+public
 extension NSError {
     class func failedToOpenStore() -> NSError {
         var dict = [String: AnyObject]()

@@ -9,14 +9,16 @@
 import Foundation
 import CoreData
 
+public 
 enum CoreDataEntityManagerContextType {
     case Main
 }
 
+public
 class CoreDataManager {
     private static let coreDataManager = CoreDataPrivateManager()
     private let moc: NSManagedObjectContext
-    init(contextType: CoreDataEntityManagerContextType = .Main) {
+    public init(contextType: CoreDataEntityManagerContextType = .Main) {
         self.moc = CoreDataManager.coreDataManager.managedObjectContext!
     }
     //  TODO: get rid of ConsoleErrorHandler here
@@ -25,7 +27,7 @@ class CoreDataManager {
     }
 }
 
-
+public
 extension CoreDataManager {
     func removeObject<T: CoreDataRepresentable>(object: T, errorHandler eh: ErrorHandler = ConsoleErrorHandler) {
         moc.deleteObject(object as! NSManagedObject)
@@ -63,21 +65,23 @@ protocol CoreDataConfigurationProtocol {
 }
 
 
-//extension CoreDataConfigurationProtocol {
-//    func modelURL() -> NSURL {
-//       return NSBundle.mainBundle().URLForResource("NameForTheModel", withExtension: "momd")!
-//    }
-//    
-//    func configurateStoreCoordinator(coordinator: NSPersistentStoreCoordinator) throws {
-//        let applicationDocumentsDirectory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).last!
-//        let url = applicationDocumentsDirectory.URLByAppendingPathComponent("NameForTheModel.sqlite")
-//        do {
-//            try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
-//        } catch {
-//            throw NSError.failedToOpenStore()
-//        }
-//    }
-//}
+extension CoreDataConfigurationProtocol {
+    func modelURL() -> NSURL {
+        assertionFailure("Your application should implement extension for CoreDataConfigurationProtocol")
+        return NSBundle.mainBundle().URLForResource("NameForTheModel", withExtension: "momd")!
+    }
+    
+    func configurateStoreCoordinator(coordinator: NSPersistentStoreCoordinator) throws {
+        assertionFailure("Your application should implement extension for CoreDataConfigurationProtocol")
+        let applicationDocumentsDirectory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).last!
+        let url = applicationDocumentsDirectory.URLByAppendingPathComponent("NameForTheModel.sqlite")
+        do {
+            try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
+        } catch {
+            throw NSError.failedToOpenStore()
+        }
+    }
+}
 
 private
 class CoreDataPrivateManager: NSObject, CoreDataConfigurationProtocol {

@@ -10,20 +10,50 @@ import Foundation
 import CoreData
 
 public 
-enum CoreDataEntityManagerContextType {
+enum CoreDataEntityManagerContextType: String {
     case Main
 }
 
 public
-class CoreDataManager {
-    private static let coreDataManager = CoreDataPrivateManager()
-    private let moc: NSManagedObjectContext
+protocol CoreDataConfig {
+    static func configurationName() -> String
+    static func modelURL() -> NSURL
+    static func configurateStoreCoordinator(coordinator: NSPersistentStoreCoordinator) throws
+}
+
+private
+class ManagersController {
+    static let managersController = ManagersController()
+    var managers = [String : AnyObject]()
+    func coreDataManager<T: CoreDataConfig>(contextType: CoreDataEntityManagerContextType) -> CoreDataPrivateStack<T> {
+        let managerID = T.configurationName() + contextType.rawValue
+        if let manager = self.managers[managerID] as? CoreDataPrivateStack<T> {
+            return manager
+        } else {
+            let newManager: CoreDataPrivateStack<T> = CoreDataPrivateStack()
+            self.managers[managerID] = newManager
+            return newManager
+        }
+    }
+}
+
+public
+class CoreDataManager<T: CoreDataConfig> {
+
+    private var coreDataPrivateManager: CoreDataPrivateStack<T> {
+        return ManagersController.managersController.coreDataManager(self.contextType)
+    }
+    
+    private var moc: NSManagedObjectContext {
+        return self.coreDataPrivateManager.managedObjectContext!
+    }
+    private let contextType: CoreDataEntityManagerContextType
     public init(contextType: CoreDataEntityManagerContextType = .Main) {
-        self.moc = CoreDataManager.coreDataManager.managedObjectContext!
+        self.contextType = contextType
     }
     //  TODO: get rid of ConsoleErrorHandler here
-    func save(errorHandler er: ErrorHandler = ConsoleErrorHandler) {
-        CoreDataManager.coreDataManager.saveContext(errorHandler: er)
+    public func save(errorHandler er: ErrorHandler = ConsoleErrorHandler) {
+        coreDataPrivateManager.saveContext(errorHandler: er)
     }
 }
 
@@ -58,45 +88,20 @@ extension CoreDataManager {
     }
 }
 
-public
-protocol CoreDataConfigurationProtocol {
-    func modelURL() -> NSURL
-    func configurateStoreCoordinator(coordinator: NSPersistentStoreCoordinator) throws
-}
-
-
-extension CoreDataConfigurationProtocol {
-    func modelURL() -> NSURL {
-        assertionFailure("Your application should implement extension for CoreDataConfigurationProtocol")
-        return NSBundle.mainBundle().URLForResource("NameForTheModel", withExtension: "momd")!
-    }
-    
-    func configurateStoreCoordinator(coordinator: NSPersistentStoreCoordinator) throws {
-        assertionFailure("Your application should implement extension for CoreDataConfigurationProtocol")
-        let applicationDocumentsDirectory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).last!
-        let url = applicationDocumentsDirectory.URLByAppendingPathComponent("NameForTheModel.sqlite")
-        do {
-            try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
-        } catch {
-            throw NSError.failedToOpenStore()
-        }
-    }
-}
-
 private
-class CoreDataPrivateManager: NSObject, CoreDataConfigurationProtocol {
+class CoreDataPrivateStack<T: CoreDataConfig>: NSObject {
     lazy var applicationDocumentsDirectory: NSURL = {
         return NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).last!
     }()
     
     lazy var managedObjectModel: NSManagedObjectModel = {
-        return NSManagedObjectModel(contentsOfURL: self.modelURL())!
+        return NSManagedObjectModel(contentsOfURL: T.modelURL())!
     }()
     
     lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator? = {
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         do {
-            try self.configurateStoreCoordinator(coordinator)
+            try T.configurateStoreCoordinator(coordinator)
             return coordinator
         } catch let error as NSError {
             NSLog("Unresolved error \(error), \(error.userInfo)")

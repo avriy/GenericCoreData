@@ -14,13 +14,6 @@ enum CoreDataEntityManagerContextType: String {
     case Main
 }
 
-public
-protocol CoreDataConfig {
-    static func configurationName() -> String
-    static func modelURL() -> NSURL
-    static func configurateStoreCoordinator(coordinator: NSPersistentStoreCoordinator) throws
-}
-
 private
 class ManagersController {
     static let managersController = ManagersController()

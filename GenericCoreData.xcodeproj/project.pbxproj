@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		636ACDD51BDF7E7700911438 /* FetchedListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636ACDD41BDF7E7700911438 /* FetchedListViewModel.swift */; };
 		63E8C3351BDE34D300808A74 /* GenericCoreData.h in Headers */ = {isa = PBXBuildFile; fileRef = 63E8C3341BDE34D300808A74 /* GenericCoreData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		63E8C33D1BDE353C00808A74 /* CoreDataRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E8C33C1BDE353C00808A74 /* CoreDataRepresentable.swift */; };
 		63E8C3401BDE361700808A74 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E8C33F1BDE361700808A74 /* CoreDataStack.swift */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		636ACDD41BDF7E7700911438 /* FetchedListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedListViewModel.swift; sourceTree = "<group>"; };
 		63E8C3311BDE34D300808A74 /* GenericCoreData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GenericCoreData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63E8C3341BDE34D300808A74 /* GenericCoreData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GenericCoreData.h; sourceTree = "<group>"; };
 		63E8C3361BDE34D300808A74 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 				63E8C3341BDE34D300808A74 /* GenericCoreData.h */,
 				63E8C33C1BDE353C00808A74 /* CoreDataRepresentable.swift */,
 				63E8C3411BDE364600808A74 /* ErrorHandling.swift */,
+				636ACDD41BDF7E7700911438 /* FetchedListViewModel.swift */,
 				63E8C33F1BDE361700808A74 /* CoreDataStack.swift */,
 				63E8C3361BDE34D300808A74 /* Info.plist */,
 			);
@@ -139,6 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				636ACDD51BDF7E7700911438 /* FetchedListViewModel.swift in Sources */,
 				63E8C3421BDE364600808A74 /* ErrorHandling.swift in Sources */,
 				63E8C33D1BDE353C00808A74 /* CoreDataRepresentable.swift in Sources */,
 				63E8C3401BDE361700808A74 /* CoreDataStack.swift in Sources */,
@@ -291,6 +295,7 @@
 				63E8C33B1BDE34D300808A74 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

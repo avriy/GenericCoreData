@@ -61,7 +61,7 @@ extension CoreDataManager {
         return NSEntityDescription.insertNewObjectForEntityForName(T.entityName, inManagedObjectContext: self.moc) as! T
     }
     
-    func allRecords<T: CoreDataRepresentable>(predicate: NSPredicate? = nil, errorHandler: NSError -> Void) -> [T] {
+    func allRecords<T: CoreDataRepresentable>(predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil, errorHandler: NSError -> Void) -> [T] {
         let fetchRequest = NSFetchRequest(entityName: T.entityName)
         fetchRequest.predicate = predicate
         do {

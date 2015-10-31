@@ -9,12 +9,13 @@
 import UIKit
 import CoreData
 
+public
 class FetchedListViewModel<T: CoreDataRepresentable, ConfigType: CoreDataConfig>: NSObject, NSFetchedResultsControllerDelegate {
 
 	let tableView: UITableView
-	let fetchedResultsController: NSFetchedResultsController
+	public let fetchedResultsController: NSFetchedResultsController
 	let coreDataManager = CoreDataManager<ConfigType>()
-    init(tableView: UITableView, predicate: NSPredicate? = nil, sortDescriptors sd: [NSSortDescriptor], sectionNameKeyPath snkp: String? = nil, cacheType: FetchResultsControllerCacheType) {
+    public init(tableView: UITableView, predicate: NSPredicate? = nil, sortDescriptors sd: [NSSortDescriptor], sectionNameKeyPath snkp: String? = nil, cacheType: FetchResultsControllerCacheType) {
 		self.tableView = tableView
 		self.fetchedResultsController = coreDataManager.fetchResultsController(T.entityName, predicate: predicate, sortDiscriptors: sd, cacheName: cacheType.cache, sectionNameKeyPath:  snkp)
 		super.init()
@@ -23,18 +24,18 @@ class FetchedListViewModel<T: CoreDataRepresentable, ConfigType: CoreDataConfig>
 		try! self.fetchedResultsController.performFetch()
 	}
 	
-    func item(indexPath: NSIndexPath) -> T? {
+    public func item(indexPath: NSIndexPath) -> T? {
         return fetchedResultsController.objectAtIndexPath(indexPath) as? T
     }
     
-    func removeItem(indexPath: NSIndexPath) {
+    public func removeItem(indexPath: NSIndexPath) {
         guard let item = item(indexPath) else {
             return
         }
         coreDataManager.removeObject(item)
     }
     
-	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	public func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		switch type {
 		case .Insert:
 			tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Automatic)
@@ -47,7 +48,7 @@ class FetchedListViewModel<T: CoreDataRepresentable, ConfigType: CoreDataConfig>
 		}
 	}
 	
-    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    public func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         let sectionIndexSet = NSIndexSet(index: sectionIndex)
         switch type {
         case .Insert:
@@ -61,15 +62,16 @@ class FetchedListViewModel<T: CoreDataRepresentable, ConfigType: CoreDataConfig>
         }
     }
     
-	func controllerWillChangeContent(controller: NSFetchedResultsController) {
+	public func controllerWillChangeContent(controller: NSFetchedResultsController) {
 		tableView.beginUpdates()
 	}
 	
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+	public func controllerDidChangeContent(controller: NSFetchedResultsController) {
 		tableView.endUpdates()
 	}
 }
 
+public
 enum FetchResultsControllerCacheType {
 	case NoCache, SpesificCache(String), RandomCache
 	

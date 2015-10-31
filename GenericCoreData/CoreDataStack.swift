@@ -11,7 +11,7 @@ import CoreData
 
 public 
 enum CoreDataEntityManagerContextType: String {
-    case Main
+    case Main, PrivateQueue
 }
 
 private
@@ -19,7 +19,7 @@ class ManagersController {
     static let managersController = ManagersController()
     var managers = [String : AnyObject]()
     func coreDataManager<T: CoreDataConfig>(contextType: CoreDataEntityManagerContextType) -> CoreDataPrivateStack<T> {
-        let managerID = T.configurationName() + contextType.rawValue
+        let managerID = T.configurationName()
         if let manager = self.managers[managerID] as? CoreDataPrivateStack<T> {
             return manager
         } else {
@@ -37,8 +37,17 @@ class CoreDataManager<T: CoreDataConfig> {
         return ManagersController.managersController.coreDataManager(self.contextType)
     }
     
+    private lazy var privateObjectContext: NSManagedObjectContext = {
+        return self.coreDataPrivateManager.privateManagedObjectContext!
+    }()
+    
     private var moc: NSManagedObjectContext {
-        return self.coreDataPrivateManager.managedObjectContext!
+        switch self.contextType {
+        case .Main:
+            return self.coreDataPrivateManager.managedObjectContext!
+        case .PrivateQueue:
+            return self.privateObjectContext
+        }
     }
     private let contextType: CoreDataEntityManagerContextType
     public init(contextType: CoreDataEntityManagerContextType = .Main) {
@@ -101,6 +110,16 @@ class CoreDataPrivateStack<T: CoreDataConfig>: NSObject {
             abort()
         }
     }()
+    
+    var privateManagedObjectContext: NSManagedObjectContext? {
+        guard let coordinator = self.persistentStoreCoordinator else {
+            return nil
+        }
+        let managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        managedObjectContext.persistentStoreCoordinator = coordinator
+        managedObjectContext.parentContext = self.managedObjectContext
+        return managedObjectContext
+    }
     
     lazy var managedObjectContext: NSManagedObjectContext? = {
         guard let coordinator = self.persistentStoreCoordinator else {

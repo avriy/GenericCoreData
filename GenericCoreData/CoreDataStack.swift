@@ -81,6 +81,28 @@ extension CoreDataManager {
         }
     }
     
+    func executeAsyncRequest<T: CoreDataRepresentable>(predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil, errorHandler: NSError -> Void, completion: [T] -> Void) {
+        assert(self.contextType == .PrivateQueue, "")
+        let fetchRequest = NSFetchRequest(entityName: T.entityName)
+        fetchRequest.sortDescriptors = sortDescriptors
+        fetchRequest.predicate = predicate
+        let asyncRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { (fetchResult) -> Void in
+            if let result = fetchResult.finalResult as? [T] {
+                completion(result)
+            } else {
+                completion([])
+            }
+        }
+        assert(self.privateObjectContext == self.privateObjectContext)
+        self.privateObjectContext.performBlock {
+            do {
+                try self.privateObjectContext.executeRequest(asyncRequest)
+            } catch let error as NSError {
+                errorHandler(error)
+            }
+        }
+    }
+    
     func fetchResultsController(entityName: String, predicate: NSPredicate?, sortDiscriptors: [NSSortDescriptor]?, cacheName: String?, sectionNameKeyPath: String? = nil) -> NSFetchedResultsController {
         let request = NSFetchRequest(entityName: entityName)
         request.predicate = predicate
@@ -115,10 +137,11 @@ class CoreDataPrivateStack<T: CoreDataConfig>: NSObject {
         guard let coordinator = self.persistentStoreCoordinator else {
             return nil
         }
-        let managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-        managedObjectContext.persistentStoreCoordinator = coordinator
-        managedObjectContext.parentContext = self.managedObjectContext
-        return managedObjectContext
+        
+        let moc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        moc.persistentStoreCoordinator = coordinator
+//        managedObjectContext.parentContext = self.managedObjectContext
+        return moc
     }
     
     lazy var managedObjectContext: NSManagedObjectContext? = {
@@ -126,9 +149,9 @@ class CoreDataPrivateStack<T: CoreDataConfig>: NSObject {
             return nil
         }
         
-        let managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-        managedObjectContext.persistentStoreCoordinator = coordinator
-        return managedObjectContext
+        let moc = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        moc.persistentStoreCoordinator = coordinator
+        return moc
     }()
     
     // MARK: - Core Data Saving support

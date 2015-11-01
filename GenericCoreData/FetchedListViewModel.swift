@@ -20,9 +20,16 @@ class FetchedListViewModel<T: CoreDataRepresentable, ConfigType: CoreDataConfig>
 		self.fetchedResultsController = coreDataManager.fetchResultsController(T.entityName, predicate: predicate, sortDiscriptors: sd, cacheName: cacheType.cache, sectionNameKeyPath:  snkp)
 		super.init()
 		self.fetchedResultsController.delegate = self
-		
-		try! self.fetchedResultsController.performFetch()
-	}
+    }
+    
+    public func performFetch(errorHandler eh: ErrorHandler = ConsoleErrorHandler) {
+        do {
+            try fetchedResultsController.performFetch()
+            tableView.reloadData()
+        } catch let error as NSError {
+            eh(error)
+        }
+    }
 	
     public func item(indexPath: NSIndexPath) -> T? {
         return fetchedResultsController.objectAtIndexPath(indexPath) as? T

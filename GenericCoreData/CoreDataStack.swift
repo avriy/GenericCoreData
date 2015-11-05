@@ -66,6 +66,10 @@ extension CoreDataManager {
         save(errorHandler: eh)
     }
     
+    func execute(block: Void -> Void) {
+        self.moc.performBlock(block)
+    }
+    
     func createNewCoreDataRepresentable<T: CoreDataRepresentable>() -> T {
         return NSEntityDescription.insertNewObjectForEntityForName(T.entityName, inManagedObjectContext: self.moc) as! T
     }

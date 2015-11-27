@@ -3,7 +3,7 @@
 //  CMProject
 //
 //  Created by nastia on 24/10/15.
-//  Copyright © 2015 com.artemiysobolev. All rights reserved.
+//  Copyright © 2015 com.mipt. All rights reserved.
 //
 
 import UIKit

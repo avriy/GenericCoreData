@@ -3,7 +3,7 @@
 //  GenericCoreData
 //
 //  Created by Artemiy Sobolev on 27.10.15.
-//  Copyright © 2015 mipt. All rights reserved.
+//  Copyright © 2015 com.mipt. All rights reserved.
 //
 
 import Foundation

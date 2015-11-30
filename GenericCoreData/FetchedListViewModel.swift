@@ -2,8 +2,9 @@
 //  FetchedListViewModel.swift
 //  CMProject
 //
-//  Created by nastia on 24/10/15.
-//  Copyright © 2015 com.parallels. All rights reserved.
+//  Created by Nastia Soboleva on 24/10/15.
+//  Copyright (c) 2004-2015. Parallels IP Holdings GmbH. All rights reserved.
+//  http://www.parallels.com
 //
 
 import UIKit

@@ -3,7 +3,8 @@
 //  GenericCoreData
 //
 //  Created by Artemiy Sobolev on 26.10.15.
-//  Copyright © 2015 com.parallels. All rights reserved.
+//  Copyright (c) 2004-2015. Parallels IP Holdings GmbH. All rights reserved.
+//  http://www.parallels.com
 //
 
 import Foundation

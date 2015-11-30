@@ -7,17 +7,31 @@
 //  http://www.parallels.com
 //
 
-import UIKit
 import CoreData
 
 public
-class FetchedListViewModel<T: CoreDataRepresentable, ConfigType: CoreDataConfig>: NSObject, NSFetchedResultsControllerDelegate {
+struct CollectionViewReloadHandlers {
+    let insertItemsAtIndexPaths: [NSIndexPath] -> Void
+    let deleteItemsAtIndexPaths: [NSIndexPath] -> Void
+    let updateItemsAtIndexPaths: [NSIndexPath] -> Void
+    
+    let insertSection: Int -> Void
+    let deleteSection: Int -> Void
+    let updateSection: Int -> Void
+    
+    let update: Void -> Void
+    let willStartUpdates: Void -> Void
+    let didEndUpdates: Void -> Void
+}
 
-	let tableView: UITableView
+public
+class FetchedListController<T: CoreDataRepresentable, ConfigType: CoreDataConfig>: NSObject, NSFetchedResultsControllerDelegate {
+
 	public let fetchedResultsController: NSFetchedResultsController
 	let coreDataManager = CoreDataManager<ConfigType>()
-    public init(tableView: UITableView, predicate: NSPredicate? = nil, sortDescriptors sd: [NSSortDescriptor], sectionNameKeyPath snkp: String? = nil, cacheType: FetchResultsControllerCacheType) {
-		self.tableView = tableView
+    let reloadHandlers: CollectionViewReloadHandlers
+    public init(reloadHandlers: CollectionViewReloadHandlers, predicate: NSPredicate? = nil, sortDescriptors sd: [NSSortDescriptor], sectionNameKeyPath snkp: String? = nil, cacheType: FetchResultsControllerCacheType) {
+		self.reloadHandlers = reloadHandlers
 		self.fetchedResultsController = coreDataManager.fetchResultsController(T.entityName, predicate: predicate, sortDiscriptors: sd, cacheName: cacheType.cache, sectionNameKeyPath:  snkp)
 		super.init()
 		self.fetchedResultsController.delegate = self
@@ -26,7 +40,7 @@ class FetchedListViewModel<T: CoreDataRepresentable, ConfigType: CoreDataConfig>
     public func performFetch(errorHandler eh: ErrorHandler = ConsoleErrorHandler) {
         do {
             try fetchedResultsController.performFetch()
-            tableView.reloadData()
+            reloadHandlers.update()
         } catch let error as NSError {
             eh(error)
         }
@@ -46,36 +60,36 @@ class FetchedListViewModel<T: CoreDataRepresentable, ConfigType: CoreDataConfig>
 	public func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		switch type {
 		case .Insert:
-			tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Automatic)
+            reloadHandlers.insertItemsAtIndexPaths([newIndexPath!])
 		case .Delete:
-			tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Automatic)
+            reloadHandlers.deleteItemsAtIndexPaths([indexPath!])
 		case .Update:
-			tableView.reloadRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Automatic)
+            reloadHandlers.updateItemsAtIndexPaths([indexPath!])
 		case .Move:
-			tableView.moveRowAtIndexPath(indexPath!, toIndexPath: newIndexPath!)
+            reloadHandlers.deleteItemsAtIndexPaths([indexPath!])
+            reloadHandlers.insertItemsAtIndexPaths([newIndexPath!])
 		}
 	}
 	
     public func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
-        let sectionIndexSet = NSIndexSet(index: sectionIndex)
         switch type {
         case .Insert:
-            tableView.insertSections(sectionIndexSet, withRowAnimation: .Automatic)
+            reloadHandlers.insertSection(sectionIndex)
         case .Update:
-            tableView.reloadSections(sectionIndexSet, withRowAnimation: .Automatic)
+            reloadHandlers.updateSection(sectionIndex)
         case .Delete:
-            tableView.deleteSections(sectionIndexSet, withRowAnimation: .Automatic)
+            reloadHandlers.deleteSection(sectionIndex)
         case .Move:
             assertionFailure("not handled case")
         }
     }
     
 	public func controllerWillChangeContent(controller: NSFetchedResultsController) {
-		tableView.beginUpdates()
-	}
+        reloadHandlers.willStartUpdates()
+    }
 	
 	public func controllerDidChangeContent(controller: NSFetchedResultsController) {
-		tableView.endUpdates()
+		reloadHandlers.didEndUpdates()
 	}
 }
 

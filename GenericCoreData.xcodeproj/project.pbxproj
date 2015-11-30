@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		634734EF1C0C66CF0065CD10 /* TableViewSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634734EE1C0C66CF0065CD10 /* TableViewSupport.swift */; };
 		636ACDD51BDF7E7700911438 /* FetchedListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636ACDD41BDF7E7700911438 /* FetchedListViewModel.swift */; };
 		636ACDD71BDF7FE800911438 /* CoreDataConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636ACDD61BDF7FE800911438 /* CoreDataConfig.swift */; };
 		63E8C3351BDE34D300808A74 /* GenericCoreData.h in Headers */ = {isa = PBXBuildFile; fileRef = 63E8C3341BDE34D300808A74 /* GenericCoreData.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		634734EE1C0C66CF0065CD10 /* TableViewSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSupport.swift; sourceTree = "<group>"; };
 		636ACDD41BDF7E7700911438 /* FetchedListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedListViewModel.swift; sourceTree = "<group>"; };
 		636ACDD61BDF7FE800911438 /* CoreDataConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataConfig.swift; sourceTree = "<group>"; };
 		63E8C3311BDE34D300808A74 /* GenericCoreData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GenericCoreData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,6 +64,7 @@
 				636ACDD41BDF7E7700911438 /* FetchedListViewModel.swift */,
 				63E8C33F1BDE361700808A74 /* CoreDataStack.swift */,
 				636ACDD61BDF7FE800911438 /* CoreDataConfig.swift */,
+				634734EE1C0C66CF0065CD10 /* TableViewSupport.swift */,
 				63E8C3361BDE34D300808A74 /* Info.plist */,
 			);
 			path = GenericCoreData;
@@ -150,6 +153,7 @@
 				63E8C33D1BDE353C00808A74 /* CoreDataRepresentable.swift in Sources */,
 				63E8C3401BDE361700808A74 /* CoreDataStack.swift in Sources */,
 				636ACDD71BDF7FE800911438 /* CoreDataConfig.swift in Sources */,
+				634734EF1C0C66CF0065CD10 /* TableViewSupport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

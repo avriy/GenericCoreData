@@ -8,6 +8,7 @@
 
 import UIKit
 
+public
 extension UITableView {
     var collectionViewReloadHandlers: CollectionViewReloadHandlers {
         let insertItems: [NSIndexPath] -> Void = { [weak self] indexPaths in
